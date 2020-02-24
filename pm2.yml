@@ -1,0 +1,6 @@
+apps:
+- script: nginx
+  args: -g 'daemon off;'
+- script: php-fpm
+  args: -R -F
+

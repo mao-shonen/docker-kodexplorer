@@ -9,6 +9,7 @@ rm -f kodexplorer4.40.zip
 
 ```bash
 docker run -it -d --restart=always \
+  --name kodexplorer \
   -p 80:80 \
   -v $PWD/nginx.conf:/etc/nginx/nginx.conf \
   -v $PWD/php.ini:/etc/php.ini \

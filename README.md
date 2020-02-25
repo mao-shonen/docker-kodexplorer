@@ -5,5 +5,5 @@ docker run -it --restart=always
   -v {path}/nginx.comf:/etc/nginx/nginx.conf \
   -v {path}/php.ini:/etc/php.ini \
   -v {path}/php-fpm.conf:/etc/php-fpm.d/www.conf \
-  q267009886tw/kodexplorer
+  q267009886/kodexplorer
 ```

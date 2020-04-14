@@ -1,25 +1,29 @@
 FROM centos:7
 
-EXPOSE 80
-VOLUME /usr/share/nginx/html
 
-WORKDIR /usr/share/nginx/html
-
-RUN rm * -rf \
-  && yum install -y epel-release yum-utils \
+RUN yum install -y epel-release yum-utils \
   && yum update -y \
-  && (curl --silent --location https://rpm.nodesource.com/setup_12.x | bash -) \
-  && yum install nodejs -y \
-  && npm i -g pm2 \
-  && yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
+  && yum install -y nginx
+
+RUN yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
   && yum-config-manager --enable remi-php73 \
-  && yum install -y nginx unzip php-fpm php-opcache php-gd php-smbclient php-json php-mbstring php-pdo php-gd php-pecl-msgpack \
+  && yum install -y php-fpm php-opcache php-gd php-smbclient php-json php-mbstring php-pdo php-gd php-pecl-msgpack \
      php-gmp php-pecl-zip php-pecl-imagick php-pear php-pecl-memcached php-fedora-autoloader php-pecl-igbinary php-intl \
   && chown -R nginx. /usr/share/nginx/html \
   && mkdir /run/php-fpm
 
-WORKDIR /root
-COPY pm2.yml .
+RUN curl -L -o KodExplorer.tar.gz https://github.com/kalcaddle/KodExplorer/archive/4.39.tar.gz \
+  && tar -zxf KodExplorer.tar.gz \
+  && rm -f KodExplorer.tar.gz \
+  && mv KodExplorer* /opt/KodExplorer
 
-CMD [ "pm2", "start", "pm2.yml", "--no-daemon" ]
+EXPOSE 80
+VOLUME /opt/KodExplorer
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY php.ini /etc/php.ini
+COPY php-fpm.conf /etc/php-fpm.d/www.conf
+COPY main.sh /root/main.sh
+
+CMD [ "bash", "/root/main.sh" ]
 
